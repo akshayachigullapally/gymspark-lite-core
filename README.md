@@ -3,7 +3,7 @@
 
 A lightweight gym management system built with React on the frontend and Express/MongoDB on the backend.
 
-## Frontend Setup (Lovable)
+## Frontend Setup
 
 This frontend project is built with React, TypeScript, and Tailwind CSS. It's designed to connect to a separate Express.js/MongoDB backend.
 
