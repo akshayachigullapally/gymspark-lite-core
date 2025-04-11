@@ -162,8 +162,8 @@ const MemberForm = () => {
             <RadioGroup 
               defaultValue="male" 
               className="flex space-x-4"
-              {...register('gender', { required: 'Gender is required' })}
-              onChange={(e) => setValue('gender', e.target.value as 'male' | 'female' | 'other')}
+              value={register('gender', { required: 'Gender is required' }).value}
+              onValueChange={(value) => setValue('gender', value as 'male' | 'female' | 'other')}
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="male" id="gender-male" />

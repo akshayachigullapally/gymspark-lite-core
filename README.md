@@ -1,73 +1,144 @@
-# Welcome to your Lovable project
 
-## Project info
+# GymSpark Lite
 
-**URL**: https://lovable.dev/projects/de601f2e-1b24-444e-b236-3e7e02655c1a
+A lightweight gym management system built with React on the frontend and Express/MongoDB on the backend.
 
-## How can I edit this code?
+## Frontend Setup (Lovable)
 
-There are several ways of editing your application.
+This frontend project is built with React, TypeScript, and Tailwind CSS. It's designed to connect to a separate Express.js/MongoDB backend.
 
-**Use Lovable**
+### To run the frontend:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/de601f2e-1b24-444e-b236-3e7e02655c1a) and start prompting.
+1. Make sure you have Node.js installed
+2. Start the development server with the command provided by Lovable
 
-Changes made via Lovable will be committed automatically to this repo.
+## Backend Setup (Not included in this Lovable project)
 
-**Use your preferred IDE**
+You'll need to create a separate backend project using Node.js, Express, and MongoDB. Here's a guide to get started:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Setting up the Express/MongoDB backend:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Create a new directory for your backend project
+2. Initialize a new Node.js project:
+   ```
+   npm init -y
+   ```
+3. Install required dependencies:
+   ```
+   npm install express mongoose cors dotenv jsonwebtoken bcryptjs
+   npm install nodemon --save-dev
+   ```
 
-Follow these steps:
+4. Create a basic folder structure:
+   ```
+   /backend
+     /controllers
+     /models
+     /routes
+     /middleware
+     /config
+     server.js
+     .env
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+5. Define your MongoDB schemas in the models folder (Member, Membership, MembershipAssignment)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+6. Create API routes in the routes folder that match the endpoints expected by the frontend
 
-# Step 3: Install the necessary dependencies.
-npm i
+7. Implement controller functions that handle the database operations
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+8. Set up authentication middleware for protecting routes
+
+9. Configure your MongoDB connection in the config folder
+
+10. Create a server.js file that brings everything together
+
+### Example server.js file:
+
+```javascript
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
+
+// Create Express app
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Failed to connect to MongoDB:', err));
+
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/members', require('./routes/members'));
+app.use('/api/memberships', require('./routes/memberships'));
+app.use('/api/membership-assignments', require('./routes/membershipAssignments'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 ```
 
-**Edit a file directly in GitHub**
+### Running the backend:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Add a start script to your package.json:
+   ```json
+   "scripts": {
+     "start": "node server.js",
+     "dev": "nodemon server.js"
+   }
+   ```
 
-**Use GitHub Codespaces**
+2. Start the development server:
+   ```
+   npm run dev
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. Make sure your backend is running on http://localhost:5000 (or update the API_URL in the frontend)
 
-## What technologies are used for this project?
+## API Endpoints
 
-This project is built with:
+The frontend expects the following API endpoints:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Auth:**
+  - POST /api/auth/login - Login with email and password
 
-## How can I deploy this project?
+- **Members:**
+  - GET /api/members - Get all members
+  - GET /api/members/:id - Get a specific member
+  - POST /api/members - Create a new member
+  - PUT /api/members/:id - Update a member
+  - DELETE /api/members/:id - Delete a member
+  - GET /api/members/with-memberships - Get members with their memberships
 
-Simply open [Lovable](https://lovable.dev/projects/de601f2e-1b24-444e-b236-3e7e02655c1a) and click on Share -> Publish.
+- **Memberships:**
+  - GET /api/memberships - Get all membership plans
+  - GET /api/memberships/:id - Get a specific membership plan
+  - POST /api/memberships - Create a new membership plan
+  - PUT /api/memberships/:id - Update a membership plan
+  - DELETE /api/memberships/:id - Delete a membership plan
 
-## Can I connect a custom domain to my Lovable project?
+- **Membership Assignments:**
+  - GET /api/membership-assignments - Get all membership assignments
+  - GET /api/membership-assignments/:id - Get a specific membership assignment
+  - POST /api/membership-assignments - Create a new membership assignment
+  - PUT /api/membership-assignments/:id - Update a membership assignment
+  - DELETE /api/membership-assignments/:id - Delete a membership assignment
 
-Yes it is!
+- **Dashboard:**
+  - GET /api/dashboard/stats - Get dashboard statistics
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Connecting Frontend and Backend
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. Make sure the backend is running on http://localhost:5000
+2. The frontend is already configured to connect to this URL in src/services/apiService.ts
+3. If your backend runs on a different URL, update the API_BASE_URL in src/config/backendConfig.ts
